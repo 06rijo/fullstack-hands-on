@@ -64,11 +64,15 @@ jobs:
           docker compose up -d --wait
           docker compose ps
 
-          # Universal smoke test: every service must be running (not exited).
-          NOT_RUNNING=$(docker compose ps --format json \
-            | jq '[.[] | select(.State != "running")] | length')
-          if [ "$NOT_RUNNING" -gt 0 ]; then
+          # Universal smoke test: every container must be running.
+          # Uses the stable text {{.State}} format (not JSON), so it is robust
+          # to docker-compose schema differences across runner versions.
+          # grep -v exits 1 when nothing is left, so guard with `|| true`.
+          NOT_RUNNING=$(docker compose ps -a --format '{{.State}}' | grep -vc '^running$' || true)
+          echo "containers_not_running=$NOT_RUNNING"
+          if [ "${NOT_RUNNING}" != "0" ]; then
             echo "::error::One or more services are not running"
+            docker compose ps -a
             docker compose logs --no-color || true
             exit 1
           fi
