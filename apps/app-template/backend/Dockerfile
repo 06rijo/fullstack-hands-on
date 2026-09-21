@@ -1,15 +1,15 @@
-# Backend image for the app-template starter.
+# Backend image for the app-template starter (FastAPI + Uvicorn).
 
-FROM node:22-alpine
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install dependencies first so they can be cached independently of source changes.
-COPY package*.json ./
-RUN npm install --omit=dev
+# Install dependencies first so they are cached independently of source changes.
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 3001
+EXPOSE 8000
 
-CMD ["node", "src/index.js"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

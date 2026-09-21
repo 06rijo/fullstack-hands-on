@@ -19,10 +19,12 @@ apps/                          # Directory containing individual apps
 └── app-template/              # Starter template — copy it to create a new app
     ├── docker-compose.yml     # Local orchestration for backend + frontend
     ├── README.md
-    ├── backend/               # API / server side
+    ├── backend/               # API / server side (Python + FastAPI)
     │   ├── Dockerfile
-    │   ├── package.json
+    │   ├── requirements.txt
     │   └── src/
+    │       ├── __init__.py
+    │       └── main.py
     └── frontend/              # UI side
         ├── Dockerfile
         ├── package.json

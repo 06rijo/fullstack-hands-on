@@ -3,9 +3,9 @@ services:
     build: ./backend
     container_name: app-template-backend
     ports:
-      - "3001:3001"
+      - "8000:8000"
     environment:
-      - NODE_ENV=development
+      - PYTHONUNBUFFERED=1
 
   frontend:
     build: ./frontend

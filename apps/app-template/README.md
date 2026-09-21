@@ -8,10 +8,12 @@ to your app's name, and fill in the `backend/` and `frontend/` with your own cod
 ```text
 app-template/
 ├── docker-compose.yml   # Runs backend and frontend together locally
-├── backend/             # API / server side (Node.js + Express)
+├── backend/             # API / server side (Python + FastAPI)
 │   ├── Dockerfile
-│   ├── package.json
-│   └── src/             # Application source
+│   ├── requirements.txt
+│   └── src/             # Application source (Python package)
+│       ├── __init__.py
+│       └── main.py      # FastAPI app + / and /health endpoints
 └── frontend/            # UI side (Node.js static server — replace with your framework)
     ├── Dockerfile
     ├── package.json
@@ -28,27 +30,30 @@ docker compose up --build
 
 This starts:
 
-- **backend** on <http://localhost:3001> — health check at `/health`
+- **backend** on <http://localhost:8000> — health check at `/health`, interactive docs at `/docs`
 - **frontend** on <http://localhost:5173>
 
 ### Running each part without Docker
 
 ```bash
-# Backend
+# Backend (Python 3.12)
 cd backend
-npm install
-npm start
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn src.main:app --reload    # http://localhost:8000
 
-# Frontend
+# Frontend (Node.js)
 cd frontend
 npm install
-npm start
+npm start                        # http://localhost:5173
 ```
 
 ## Creating a new app from this template
 
 1. `cp -r apps/app-template apps/your-app`
-2. Rename the package `name` fields in `backend/package.json` and `frontend/package.json`.
+2. Add your own packages to `backend/requirements.txt` and to
+   `frontend/package.json` (renaming the `name` field in the latter).
 3. Update service names, container names, and ports in `docker-compose.yml`.
 4. Replace the starter code in `backend/src/` and `frontend/src/`.
 5. Rewrite this README to describe your app.
