@@ -1,0 +1,10 @@
+{
+  "name": "app-template-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for the app-template starter in fullstack-hands-on.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}
