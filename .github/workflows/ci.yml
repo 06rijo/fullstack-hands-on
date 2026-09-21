@@ -1,0 +1,80 @@
+# CI — build & smoke-test every self-contained app under apps/.
+#
+# The repository is a monorepo of independent apps (apps/*/, each with its own
+# docker-compose.yml, backend/ and frontend/). The contribution guide requires
+# "verify your app builds and runs before opening a pull request" — this
+# workflow enforces that automatically:
+#
+#   1. discover  — list the directories under apps/ into a JSON matrix
+#   2. verify    — for each app, `docker compose build` then boot it and fail
+#                  if any service is not running
+#
+# Runs on every pull request and on push to main.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # --- Discover apps -------------------------------------------------------
+  discover:
+    name: Discover apps
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.list.outputs.dir_output }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: List apps under apps/
+        id: list
+        run: |
+          APPS=$(for d in apps/*/; do [ -d "$d" ] && basename "$d"; done)
+          # jq is preinstalled on ubuntu runners
+          MATRIX=$(printf '%s\n' "$APPS" | jq -R -s -c 'split("\n") | map(select(length > 0)) | {app: .}')
+          echo "Discovered apps: $APPS"
+          echo "dir_output=$MATRIX" >> "$GITHUB_OUTPUT"
+
+  # --- Verify each app builds and runs -------------------------------------
+  verify:
+    name: Verify ${{ matrix.app }}
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: docker compose build
+        working-directory: apps/${{ matrix.app }}
+        run: docker compose build
+
+      - name: Boot services and smoke test
+        working-directory: apps/${{ matrix.app }}
+        run: |
+          set -euo pipefail
+          docker compose up -d --wait
+          docker compose ps
+
+          # Universal smoke test: every service must be running (not exited).
+          NOT_RUNNING=$(docker compose ps --format json \
+            | jq '[.[] | select(.State != "running")] | length')
+          if [ "$NOT_RUNNING" -gt 0 ]; then
+            echo "::error::One or more services are not running"
+            docker compose logs --no-color || true
+            exit 1
+          fi
+          echo "Smoke test passed for ${{ matrix.app }}"
+
+      - name: Tear down containers
+        if: always()
+        working-directory: apps/${{ matrix.app }}
+        run: docker compose down -v --remove-orphans

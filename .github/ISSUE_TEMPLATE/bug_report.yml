@@ -1,0 +1,90 @@
+name: 🐛 Bug report
+description: Report a bug in one of the apps in this repository
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report. Please be as
+        specific as possible so the issue can be reproduced and fixed quickly.
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Where is the bug?
+      description: Which layer / app is affected?
+      options:
+        - apps/app-template (backend)
+        - apps/app-template (frontend)
+        - Apps/ (other — name it in the description)
+        - CI / build tooling
+        - Documentation
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear, concise description of what the bug is.
+      placeholder: "e.g. The /health endpoint returns 500 when ..."
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Exact steps needed to trigger the bug.
+      placeholder: |
+        1. `cd apps/app-template && docker compose up --build`
+        2. `curl http://localhost:8000/health`
+        3. Observe ...
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened instead? Include error messages.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Docker version, Node/Python versions, browser, etc.
+      placeholder: |
+        - OS: ...
+        - Docker: ...
+        - Python: ...
+        - Node: ...
+        - Browser: ...
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Paste relevant terminal output, stack traces, or attach screenshots.
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched for a similar existing issue before filing this one.
+          required: true
+        - label: I am not sharing any secrets or credentials in this report.
+          required: true

@@ -1,0 +1,63 @@
+name: ✨ Feature request
+description: Propose a new feature or improvement for an app in this repository
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a feature. Focus on the **problem you're trying to
+        solve** — reviewers can help find the best way to solve it.
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Where should this live?
+      description: Which layer / app is affected?
+      options:
+        - apps/app-template (backend)
+        - apps/app-template (frontend)
+        - Apps/ (other — name it in the description)
+        - CI / build tooling
+        - Documentation
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What need or pain point does this feature address?
+      placeholder: "e.g. There's no way to ..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What do you suggest we add or change?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you consider? Why isn't it sufficient?
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How would we know this feature is done and working?
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched for a similar existing request before filing this one.
+          required: true
