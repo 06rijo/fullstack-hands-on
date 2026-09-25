@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shadow Protocol</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN ===== -->
+<section id="screen-auth" class="screen active">
+  <div class="panel auth-panel">
+    <h1 class="brand">SHADOW<span>PROTOCOL</span></h1>
+    <p class="tagline">Tactical infiltration. Zero margin for error.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="login">Log in</button>
+      <button class="tab-btn" data-tab="register">Create account</button>
+    </div>
+
+    <form id="form-login" class="auth-form active">
+      <label>Callsign<input type="text" id="login-username" autocomplete="username" required /></label>
+      <label>Access code<input type="password" id="login-password" autocomplete="current-password" required /></label>
+      <button type="submit" class="btn primary">Deploy</button>
+      <p class="form-error" id="login-error"></p>
+    </form>
+
+    <form id="form-register" class="auth-form">
+      <label>Choose a callsign<input type="text" id="register-username" minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" required /></label>
+      <label>Choose an access code<input type="password" id="register-password" minlength="4" required /></label>
+      <button type="submit" class="btn primary">Enlist</button>
+      <p class="form-error" id="register-error"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ===== MAIN MENU ===== -->
+<section id="screen-menu" class="screen">
+  <div class="panel menu-panel">
+    <h1 class="brand small">SHADOW<span>PROTOCOL</span></h1>
+    <div class="operator-card">
+      <div class="avatar-dot" id="menu-avatar-color"></div>
+      <div>
+        <div class="operator-name" id="menu-username">—</div>
+        <div class="operator-level">LVL <span id="menu-level">1</span> · <span id="menu-xp">0</span>/<span id="menu-xp-next">100</span> XP</div>
+        <div class="xp-bar"><div class="xp-bar-fill" id="menu-xp-bar"></div></div>
+      </div>
+    </div>
+
+    <nav class="menu-nav">
+      <button class="btn primary big" id="btn-play">Deploy to Field</button>
+      <button class="btn" id="btn-loadout">Loadout</button>
+      <button class="btn" id="btn-profile">Profile</button>
+      <button class="btn" id="btn-leaderboard">Leaderboard</button>
+      <button class="btn" id="btn-settings">Settings</button>
+      <button class="btn ghost" id="btn-logout">Log out</button>
+    </nav>
+  </div>
+</section>
+
+<!-- ===== LOADOUT SCREEN ===== -->
+<section id="screen-loadout" class="screen">
+  <div class="panel">
+    <h2>Loadout</h2>
+    <p class="hint">Select your primary and secondary weapon before deployment.</p>
+    <div class="loadout-group">
+      <h3>Primary</h3>
+      <div class="weapon-grid" id="primary-weapon-grid"></div>
+    </div>
+    <div class="loadout-group">
+      <h3>Secondary</h3>
+      <div class="weapon-grid" id="secondary-weapon-grid"></div>
+    </div>
+    <div class="row">
+      <button class="btn" id="loadout-back">Back</button>
+      <button class="btn primary" id="loadout-save">Save Loadout</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROFILE SCREEN ===== -->
+<section id="screen-profile" class="screen">
+  <div class="panel">
+    <h2>Profile</h2>
+    <label>Operator color
+      <input type="color" id="profile-color" value="#4ade80" />
+    </label>
+    <div class="stat-grid" id="profile-stats"></div>
+    <div class="row">
+      <button class="btn" id="profile-back">Back</button>
+      <button class="btn primary" id="profile-save">Save</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEADERBOARD SCREEN ===== -->
+<section id="screen-leaderboard" class="screen">
+  <div class="panel">
+    <h2>Leaderboard</h2>
+    <table class="leaderboard-table">
+      <thead><tr><th>#</th><th>Callsign</th><th>Lvl</th><th>XP</th><th>Kills</th><th>Best Wave</th></tr></thead>
+      <tbody id="leaderboard-rows"></tbody>
+    </table>
+    <button class="btn" id="leaderboard-back">Back</button>
+  </div>
+</section>
+
+<!-- ===== SETTINGS SCREEN ===== -->
+<section id="screen-settings" class="screen">
+  <div class="panel">
+    <h2>Settings</h2>
+    <label>Mouse sensitivity
+      <input type="range" id="setting-sensitivity" min="0.2" max="3" step="0.1" />
+    </label>
+    <label>Master volume
+      <input type="range" id="setting-volume" min="0" max="1" step="0.05" />
+    </label>
+    <label>Graphics quality
+      <select id="setting-graphics">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </label>
+    <label class="checkbox"><input type="checkbox" id="setting-subtitles" /> Combat subtitles (audio cues as on-screen text)</label>
+    <label>Reticle color
+      <input type="color" id="setting-reticle" value="#ffb100" />
+    </label>
+    <div class="row">
+      <button class="btn" id="settings-back">Back</button>
+      <button class="btn primary" id="settings-save">Save</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GAME SCREEN ===== -->
+<section id="screen-game" class="screen">
+  <canvas id="game-canvas"></canvas>
+
+  <div id="hud">
+    <div id="reticle"></div>
+    <div id="hud-top-left">
+      <div class="hud-label">WAVE <span id="hud-wave">1</span></div>
+      <div class="hud-label">ENEMIES <span id="hud-enemies">0</span></div>
+    </div>
+    <div id="hud-top-right">
+      <div class="hud-label">SCORE <span id="hud-score">0</span></div>
+    </div>
+    <div id="hud-bottom-left">
+      <div class="bar health-bar"><div class="bar-fill" id="hud-health-fill"></div></div>
+      <div class="bar armor-bar"><div class="bar-fill" id="hud-armor-fill"></div></div>
+    </div>
+    <div id="hud-bottom-right">
+      <div id="hud-ammo"><span id="hud-ammo-current">30</span>/<span id="hud-ammo-reserve">90</span></div>
+      <div id="hud-weapon-name">ASSAULT RIFLE</div>
+    </div>
+    <div id="hud-subtitles"></div>
+    <div id="hud-hit-marker"></div>
+    <div id="hud-damage-flash"></div>
+  </div>
+
+  <div id="pause-overlay" class="overlay hidden">
+    <div class="panel">
+      <h2>Paused</h2>
+      <button class="btn primary" id="resume-btn">Resume</button>
+      <button class="btn" id="quit-btn">Quit to Menu</button>
+    </div>
+  </div>
+
+  <div id="click-to-play" class="overlay">
+    <div class="panel center-text">
+      <h2>Click to engage</h2>
+      <p class="hint">WASD move · Shift sprint · Ctrl crouch · Z prone · Space jump<br/>
+      Mouse look · Left click fire · Right click aim · R reload · 1/2 switch weapon · Esc pause</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESULTS SCREEN ===== -->
+<section id="screen-results" class="screen">
+  <div class="panel">
+    <h2 id="results-title">Mission Debrief</h2>
+    <div class="stat-grid" id="results-stats"></div>
+    <p id="results-levelup" class="levelup hidden">Level up! Now level <span id="results-new-level"></span></p>
+    <button class="btn primary" id="results-continue">Return to Base</button>
+  </div>
+</section>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>

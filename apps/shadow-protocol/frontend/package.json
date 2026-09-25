@@ -1,0 +1,12 @@
+{
+  "name": "shadow-protocol-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shadow Protocol browser FPS — static frontend served over HTTP.",
+  "scripts": {
+    "start": "serve -s src -l 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.3"
+  }
+}
